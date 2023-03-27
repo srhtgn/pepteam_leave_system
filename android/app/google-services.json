@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "147352693276",
+    "project_id": "pepteam-permission-system",
+    "storage_bucket": "pepteam-permission-system.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:147352693276:android:13d9069c0e450e9e9a8dd9",
+        "android_client_info": {
+          "package_name": "com.serhatgun.pepteam_permission_system"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "147352693276-u24f3plgmkg0e9qrgrmpegeh81j6hvrv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgHPWTL22yrbeFLOdrFxhoDN03EZG1GnM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "147352693276-u24f3plgmkg0e9qrgrmpegeh81j6hvrv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
