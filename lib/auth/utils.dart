@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Utils{
+class Utils{ //Sistem tarafından otomatik oluşturulan otomatik hata mesajları
   static final messengerKey = GlobalKey<ScaffoldMessengerState>();
   static showSnackBar(String? text){
 

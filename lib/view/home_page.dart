@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         actions: [
-          InkWell(
+          InkWell(//App bar kullanıcı fotoğrafı
                 onTap: (){
                   UserAlertDialog(context);
                 },
@@ -59,14 +59,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget? HomePages() {
-    if (user.email == 's@s.com') {
+    if (user.email == 's@s.com') {//Giriş yapmış kullanıcının email adresi 's@s.com' yani yönetici ise AdminHomePage değilse EmployeeHomePage sayfasına yönlendir
       return AdminHomePage();
     } else {
       return EmployeeHomePage();
     }
   }
 
-  Future<void> UserAlertDialog(BuildContext context) async {
+  Future<void> UserAlertDialog(BuildContext context) async { //Kullanıcı bilgileri diyalog penceresi
     showDialog<double>(
       context: context,
       builder: (context) => AlertDialog(
@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  StreamBuilder<QuerySnapshot<Object?>> UserInformation() {
+  StreamBuilder<QuerySnapshot<Object?>> UserInformation() { //Kullanıcı bilgilerini dinle
     return StreamBuilder<QuerySnapshot>(
         stream: userService.getSpecificUsers(),
         builder: (BuildContext context, AsyncSnapshot asyncSnapshot) {
@@ -106,7 +106,7 @@ class _HomePageState extends State<HomePage> {
               var name;
               var email;
 
-              for (int i = 0; i < listOfDocumentSnapUser.length; i++) {
+              for (int i = 0; i < listOfDocumentSnapUser.length; i++) { //Kullanıcı kayıtlarını tek tek dinle
                 name = listOfDocumentSnapUser[i]['name'];
                 email = listOfDocumentSnapUser[i]['email'];
               }
@@ -147,7 +147,7 @@ class _HomePageState extends State<HomePage> {
         });
   }
 
-  Future<void> SignOutRequest(BuildContext context) async {
+  Future<void> SignOutRequest(BuildContext context) async { //Çıkış yapma diyalog penceresi
     showDialog<double>(
       context: context,
       builder: (context) => AlertDialog(
@@ -183,7 +183,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<void> ImageAlertDialog(BuildContext context) async {
+  Future<void> ImageAlertDialog(BuildContext context) async { //Fotoğraf yükleme diyalog penceresi
     final ImagePicker _picker = ImagePicker();
     showDialog<double>(
         context: context,
@@ -195,7 +195,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Spacer(),
                   IconButton(
-                      onPressed: () async {
+                      onPressed: () async { //Fotoğrafı galeriden seç
                         XFile? _fileGallery = await _picker.pickImage(
                             source: ImageSource.gallery);
                         await ImageUpload(_fileGallery);
@@ -205,7 +205,7 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.deepPurpleAccent)),
                   Spacer(),
                   IconButton(
-                      onPressed: () async {
+                      onPressed: () async { //Fotoğrafı Kamera ile al
                         XFile? _fileCamera = await _picker.pickImage(
                             source: ImageSource.camera);
                         await ImageUpload(_fileCamera);
@@ -219,7 +219,7 @@ class _HomePageState extends State<HomePage> {
             ]));
   }
 
-  StreamBuilder<QuerySnapshot<Object?>> UserImage() {
+  StreamBuilder<QuerySnapshot<Object?>> UserImage() { //Kullanıcı koleksiyonundan image URL'sini dinle
     return StreamBuilder<QuerySnapshot>(
                 stream: userService.getSpecificUsers(),
                 builder: (BuildContext context, AsyncSnapshot asyncSnapshot) {
@@ -241,10 +241,10 @@ class _HomePageState extends State<HomePage> {
                       }
 
 
-                      if(image == 'image'){
+                      if(image == 'image'){ //Eğer image indexinin değeri varsayılan değer olan 'image' ise account ikonu göster
                         state = Icon(Icons.account_circle, color: Colors.deepPurpleAccent, size: 35);
                       }else{
-                        state = CircleAvatar(
+                        state = CircleAvatar( //Değilse image URL'sini tara ve fotoğrafı göster
                           radius: 25,
                           backgroundImage: NetworkImage(image),
                         );
@@ -260,7 +260,7 @@ class _HomePageState extends State<HomePage> {
 
 
 
-  Future<void> ImageUpload(XFile? file) async {
+  Future<void> ImageUpload(XFile? file) async { //Seçilen fotoğrafı yükle ve URL'sini firestore'a kaydet
     XFile? _file = file;
     var _profileRef = FirebaseStorage.instance.ref('${user.email}');
     var _task = _profileRef.putFile(File(_file!.path));
@@ -277,7 +277,7 @@ class _HomePageState extends State<HomePage> {
   }
 
 
-  Future<void> SignOut(BuildContext context) async {
+  Future<void> SignOut(BuildContext context) async {//Çıkış yapma methodu
     await auth.signOut();
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
   }

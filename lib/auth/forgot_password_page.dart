@@ -3,7 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pepteam_permission_system/auth/utils.dart';
+import 'package:pepteam_permission_system/constants/input_decoration.dart';
 
+// Şifre sıfırlama ekranı
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({Key? key}) : super(key: key);
 
@@ -41,23 +43,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               TextFormField(
                 controller: _email,
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  contentPadding:
-                  EdgeInsets.only(right: 20, left: 20),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  hintText: 'Email girin',
-                  fillColor: Colors.white,
-                  filled: true,
-                ),
+                decoration: InputDecorators().EmailInput,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (email) => email != null && ! EmailValidator.validate(email)
+                validator: (email) => email != null && ! EmailValidator.validate(email) //email adresi giriş doğrulaması
                     ? 'Enter a valid email' : null,
               ),
 
@@ -88,7 +76,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         barrierDismissible: false,
         builder: (context) => Center(child: CircularProgressIndicator()));
     try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(
+      await FirebaseAuth.instance.sendPasswordResetEmail( //Girilen email adresine şifre sıfırlama emaili gönder
           email: _email.text.trim());
 
       Utils.showSnackBar('Password Reset Email Sent');

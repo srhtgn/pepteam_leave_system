@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+//Uygulama yazı stilleri
 class TextStyles{
   final TextStyle grey_w500_s14 = GoogleFonts.inter(textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color.fromRGBO(52, 64, 84, 1.0)));
   final TextStyle blue_w500_s14 = GoogleFonts.inter(textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color.fromRGBO(2, 106, 162, 1.0)));

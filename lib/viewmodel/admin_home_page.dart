@@ -8,7 +8,7 @@ import 'package:pepteam_permission_system/constants/text_styles.dart';
 import 'package:pepteam_permission_system/services/permission_requests_service.dart';
 import 'package:pepteam_permission_system/services/users_service.dart';
 
-enum Weekday { Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday }
+enum Weekday { Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday } //Haftanın günleri enum'ı
 
 class AdminHomePage extends StatefulWidget {
   const AdminHomePage({Key? key}) : super(key: key);
@@ -30,7 +30,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
   late List<DocumentSnapshot> listOfDocumentSnapRequests;
   late List<DocumentSnapshot> listOfDocumentSnapUser;
 
-  final id = FirebaseAuth.instance.currentUser!.uid;
+  final id = FirebaseAuth.instance.currentUser!.uid; //Admin id'si
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: StreamBuilder(
+            child: StreamBuilder( //Kullanıcı istatistiklerini getir
               stream: _usersService.getSpecificUsers(),
               builder: (BuildContext context, AsyncSnapshot asyncSnapshot) {
                 if (asyncSnapshot.hasError) {
@@ -223,7 +223,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                           currentDate.difference(recordTime);
                           int differenceInDays = difference.inDays;
 
-                          if(differenceInDays > 0){
+                          if(differenceInDays > 0){ //Onay bekleyen izin talebinin süresi 1 günden fazlaysa otomatik olarak reddedilir
                             statusData = 'Reddedildi';
                             statusUpdate(
                                 documentSnapshot,
@@ -235,7 +235,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                           var color;
                           var randomValue = Random().nextInt(3);
 
-                          if (randomValue == 0) {
+                          if (randomValue == 0) { //Kullanıcı isimlerinin renklerine rastgele değer ata
                             paleColor = Color.fromRGBO(240, 249, 255, 1.0);
                             color = Color.fromRGBO(2, 106, 162, 1.0);
                           } else if (randomValue == 1) {
@@ -246,7 +246,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                             color = Color.fromRGBO(180, 35, 24, 1.0);
                           }
 
-                          if (_requestStatus == 'Bekliyor') {
+                          if (_requestStatus == 'Bekliyor') { //Talep durumuna göre ilgili istatistik değerini güncelle
                             _leavesPendingApproval += 1;
                           } else if (_requestStatus == 'Onaylandı') {
                             _approvedLeavesForAdmin += 1;
@@ -256,7 +256,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
                           _permissionStart as Timestamp;
                           _workStart as Timestamp;
-                          var leaveStart = _permissionStart.toDate();
+                          var permissionStart = _permissionStart.toDate();
                           var workStart = _workStart.toDate();
 
                           Weekday weekday = Weekday.values[currentDate.weekday - 1];
@@ -266,28 +266,24 @@ class _AdminHomePageState extends State<AdminHomePage> {
                             result = false;
                           }
 
-                          if ((currentDate.isAfter(leaveStart) &&
+                          if ((currentDate.isAfter(permissionStart) && //Bugünkü izinli sayısını almak için gerekli kontroller
                               currentDate.isBefore(workStart)) && result == true && _requestStatus == 'Onaylandı') {
                             _numberOfLeaveToday += 1;
                           }
 
-                          AdminStatisticsUpdate(
+                          AdminStatisticsUpdate( //İstatistik verilerini güncelle
                               _leavesPendingApproval,
                               _approvedLeavesForAdmin,
                               _deniedLeavesForAdmin,
                               _numberOfLeaveToday);
 
-                          if (_requestStatus == 'Bekliyor') {
+                          if (_requestStatus == 'Bekliyor') { //Sadece talep durumu 'Bekliyor' olan kayıtları getir
                             status = InkWell(
                               onTap: () async {
                                 var userRef = colRef.doc(_id);
-                                var response = await userRef.get();
+                                var response = await userRef.get(); //Talep gönderen kullanıcın verilerini al
 
-                                if(response['image'] == 'image'){
-                                }
-
-
-                                showModalBottomSheet(
+                                showModalBottomSheet( //Talep detayları BottomSheet
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.vertical(
                                             top: Radius.circular(25))),
@@ -317,7 +313,6 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                                         BorderRadius.circular(
                                                             15),
                                                         color: Colors.black),
-                                                    //color: Colors.white,
                                                   )),
                                               Column(
                                                 mainAxisSize: MainAxisSize.min,
@@ -338,7 +333,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                                   ),
                                                   Column(
                                                     children: [
-                                                      UserImage(response['image']),
+                                                      UserImage(response['image']), //İzin talebinde bulunan kullanıcın footoğrafını getir
                                                       Text(_name)
                                                     ],
                                                   ),
@@ -399,7 +394,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                                   ),
 
                                                   SizedBox(height: 30),
-                                                  ElevatedButton(
+                                                  ElevatedButton( //Talep onay butonu
                                                       style: ElevatedButton.styleFrom(
                                                           primary: Color.fromRGBO(
                                                               127, 86, 217, 1),
@@ -411,6 +406,8 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                                               BorderRadius
                                                                   .circular(
                                                                   8))),
+
+
                                                       onPressed: () async {
                                                         statusData = 'Onaylandı';
                                                         statusUpdate(
@@ -419,8 +416,12 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                                         Navigator.pop(context);
                                                       },
                                                       child: Text('Kabul Et')),
+
+
                                                   SizedBox(height: 10),
-                                                  OutlinedButton(
+
+
+                                                  OutlinedButton( //Talep ret butonu
                                                       style: OutlinedButton
                                                           .styleFrom(
                                                           minimumSize: Size(
@@ -498,7 +499,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                 ],
                               ),
                             );
-                          } else if (_requestStatus != 'Bekliyor') {
+                          } else if (_requestStatus != 'Bekliyor') { //Telep durumu 'Bekliyor' değilse boşluk döndür
                             status = SizedBox();
                           }
 
@@ -515,7 +516,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
       ),
     );
   }
-  Widget UserImage(data) {
+  Widget UserImage(data) { //Talep gönderen kullanıcının fotoğrafı
     var userImage;
     if(data == 'image'){
       userImage = Icon(Icons.account_circle, color: Colors.deepPurpleAccent, size: 50);
@@ -550,7 +551,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
   }
 
-  Future<void> statusUpdate(
+  Future<void> statusUpdate( //Talep durumu güncelleme methodu
       DocumentSnapshot<Object?> documentSnapshot, String statusData) {
     return FirebaseFirestore.instance
         .collection('PermissionRequests')

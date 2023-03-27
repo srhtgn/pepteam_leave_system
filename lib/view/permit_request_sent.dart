@@ -3,6 +3,7 @@ import 'package:pepteam_permission_system/constants/image_items.dart';
 import 'package:pepteam_permission_system/constants/text_styles.dart';
 import 'package:pepteam_permission_system/view/home_page.dart';
 
+//İzin gönderildi sayfası
 class PermitRequestSent extends StatefulWidget {
   const PermitRequestSent({Key? key}) : super(key: key);
 

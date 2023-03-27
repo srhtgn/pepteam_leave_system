@@ -47,7 +47,7 @@ class PermissionRequestsService {
     Stream<QuerySnapshot<Map<String, dynamic>>> ref = FirebaseFirestore.instance
         .collection('PermissionRequests')
         .where('userId', isEqualTo: _auth.currentUser?.uid)
-        // .orderBy('record time', descending: true)
+        .orderBy('record time', descending: true)
         .snapshots();
     return ref;
   }
@@ -57,11 +57,6 @@ class PermissionRequestsService {
         .collection('PermissionRequests')
         .orderBy('record time', descending: true)
         .snapshots();
-    return ref;
-  }
-
-  Future removeStatus(String docId) {
-    var ref = _firestore.collection('PermissionRequests').doc(docId).delete();
     return ref;
   }
 }

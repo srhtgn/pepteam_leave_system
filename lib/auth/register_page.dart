@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pepteam_permission_system/auth/utils.dart';
 import 'package:pepteam_permission_system/constants/image_items.dart';
+import 'package:pepteam_permission_system/constants/input_decoration.dart';
 import 'package:pepteam_permission_system/main.dart';
 import 'package:pepteam_permission_system/view/home_page.dart';
 import 'package:pepteam_permission_system/auth/login_page.dart';
@@ -67,20 +68,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 SizedBox(height: 5),
                 TextFormField(
                   controller: _name,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.only(right: 20, left: 20),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    hintText: 'Tam Adınızı girin',
-                    fillColor: Colors.white,
-                    filled: true,
-                  ),
+                  decoration: InputDecorators().NameInput,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) => value != null && value.length < 1
                       ? 'Enter a user name'
@@ -97,20 +85,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 TextFormField(
                   controller: _email,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.only(right: 20, left: 20),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    hintText: 'Email girin',
-                    fillColor: Colors.white,
-                    filled: true,
-                  ),
+                  decoration: InputDecorators().EmailInput,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (email) =>
                       email != null && !EmailValidator.validate(email)
@@ -132,20 +107,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 TextFormField(
                   controller: _password,
                   keyboardType: TextInputType.visiblePassword,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.only(right: 20, left: 20),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    hintText: 'Şifre oluştur',
-                    fillColor: Colors.white,
-                    filled: true,
-                  ),
+                  decoration: InputDecorators().CreatePasswordInput,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) => value != null && value.length < 8
                       ? 'Enter min. 8 characters'
@@ -235,7 +197,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ));
   }
 
-  Future signUp() async {
+  Future signUp() async { //Halihazırda bu email ile kayıtlı kullanıcı yoksa kayıt işlemini yap ve ana ekrana git varsa hata mesajı göster
     final isValid = formKey.currentState!.validate();
     var _userName = _name.text.trim();
     var _userEmail = _email.text.trim();
@@ -244,18 +206,18 @@ class _RegisterPageState extends State<RegisterPage> {
     String? _role;
     String _statistics ;
 
-    var _approvedLeaves = 0;
+    var _approvedLeaves = 0; //Çalışan istatistikleri varsayılan değerler
     var _deniedLeaves = 0;
     var _freeLeaves = 0;
     var _annualLeaveEntitlement = 30;
 
-    var _leavesPendingApproval = 0;
+    var _leavesPendingApproval = 0; //Yönetici istatistikleri varsayılan değerler
     var _approvedLeavesForAdmin = 0;
     var _deniedLeavesForAdmin = 0;
     var _numberOfLeaveToday = 0;
 
     List state = [];
-    if (_userEmail == 's@s.com') {
+    if (_userEmail == 's@s.com') { //Eğer kullanıcı s@s.com adresi ile kayıt olmuşsa bu kullanıcı yöneticidir
       _role = 'yönetici';
       _statistics = 'admin statistics';
 
@@ -279,21 +241,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (!isValid) return;
     try {
-      await FirebaseAuth.instance
+      await FirebaseAuth.instance //Email ve şifre ile kaydol
           .createUserWithEmailAndPassword(
               email: _userEmail, password: _userPassword)
           .then((value) {
-        FirebaseFirestore.instance
-            .collection('users')
-            .doc(value.user!.uid)
-            .set({
-          'name': _userName,
-          'role': _role,
-          'email': _userEmail,
-          _statistics : state,
-          'id': value.user!.uid,
-          'image': 'image',
-        });
+        AllUserInformations(value, _userName, _role, _userEmail, _statistics, state);
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
@@ -305,5 +257,19 @@ class _RegisterPageState extends State<RegisterPage> {
       Utils.showSnackBar(e.message);
     }
     navigatorKey.currentState!.popUntil((route) => route.isFirst);
+  }
+
+  void AllUserInformations(UserCredential value, String _userName, String? _role, String _userEmail, String _statistics, List<dynamic> state) {
+    FirebaseFirestore.instance //Kayıt esnasında 'users' koleksiyonu altına kaydolan kullanıcının tüm bilgilerini gönder
+        .collection('users')
+        .doc(value.user!.uid)
+        .set({
+      'name': _userName,
+      'role': _role,
+      'email': _userEmail,
+      _statistics : state,
+      'id': value.user!.uid,
+      'image': 'image',
+    });
   }
 }

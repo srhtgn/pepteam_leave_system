@@ -39,7 +39,7 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
       body: Column(
         children: [
           Expanded(
-            child: StreamBuilder(
+            child: StreamBuilder( //Çalışan istatistiklerini getir
               stream: _usersService.getSpecificUsers(),
               builder: (BuildContext context, AsyncSnapshot asyncSnapshot) {
                 if (asyncSnapshot.hasError) {
@@ -228,7 +228,7 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
                           var paleColor;
                           var color;
 
-                          if (_requestStatus == 'Onaylandı') {
+                          if (_requestStatus == 'Onaylandı') { //İlgili istatistiklerin kontrollerini yap
                             _approvedLeaves += 1;
                           }
 
@@ -247,9 +247,9 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
                             _annualDayOff = 0;
                           }
 
-                          EmployeeStatisticsUpdate(_id, _approvedLeaves, _deniedLeaves, _freeLeaves, _annualLeaveEntitlement);
+                          EmployeeStatisticsUpdate(_id, _approvedLeaves, _deniedLeaves, _freeLeaves, _annualLeaveEntitlement); //İstatistikleri güncelle
 
-                          switch (_requestStatus) {
+                          switch (_requestStatus) { //Talep durumuna özel renk ataması
                             case 'Bekliyor':
                               {
                                 paleColor = Color.fromRGBO(240, 249, 255, 1.0);
@@ -275,7 +275,7 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
                           var yesterday = currentDate.subtract(Duration(days: 1));
                           var recordDate;
 
-                          if(dateFormat.format(recordTime) == dateFormat.format(currentDate)){
+                          if(dateFormat.format(recordTime) == dateFormat.format(currentDate)){ //Kayıt zamanına göre kullanıcı arayüzünde görünecek tarih
                             recordDate = 'Bugün';
                           }else if(dateFormat.format(recordTime) == dateFormat.format(yesterday)){
                             recordDate = 'Dün';
@@ -297,7 +297,7 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
                                             color: Color.fromRGBO(
                                                 2, 171, 101, 1.0))));
 
-                                await approvedDeniedBottomSheet(
+                                await approvedDeniedBottomSheet( //Talep durumu 'Onaylandı-Reddedildi' BottomSheet'i
                                     context,
                                     icon,
                                     iconText,
@@ -309,8 +309,6 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
                                     _buttonVisible,
                                     _requestStatus,
                                     index);
-
-
                               } else if (_requestStatus == 'Reddedildi') {
                                 icon = SvgPicture.asset(SvgImage().crossIcon);
                                 iconText = Text('Talebin Onaylanmadı',
@@ -321,7 +319,7 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
                                             color: Color.fromRGBO(
                                                 179, 35, 24, 1.0))));
                                 _buttonVisible = false;
-                                await approvedDeniedBottomSheet(
+                                await approvedDeniedBottomSheet( //Talep durumu 'Onaylandı-Reddedildi' BottomSheet'i
                                     context,
                                     icon,
                                     iconText,
@@ -334,7 +332,7 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
                                     _requestStatus,
                                     index);
                               } else if (_requestStatus == 'Bekliyor') {
-                                await waitingBottomSheet(
+                                await waitingBottomSheet( //Talep durumu 'Bekliyor' BottomSheet'i
                                     context,
                                     _type,
                                     _permissionStart,
@@ -406,7 +404,7 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
     );
   }
 
-  void EmployeeStatisticsUpdate(_id, int _approvedLeaves, int _deniedLeaves, int _freeLeaves, int _annualLeaveEntitlement) {
+  void EmployeeStatisticsUpdate(_id, int _approvedLeaves, int _deniedLeaves, int _freeLeaves, int _annualLeaveEntitlement) { //Çalışan istatistiklerini güncelleme methodu
     try {
       FirebaseFirestore.instance
           .collection('users')
@@ -422,7 +420,7 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
     } catch (e) {}
   }
 
-  approvedDeniedBottomSheet(BuildContext context, icon, iconText, _type,
+  approvedDeniedBottomSheet(BuildContext context, icon, iconText, _type, //Talep durumu 'Onaylandı-Reddedildi' BottomSheet'i
       _permissionStart, _workStart, _totalDaysOff, _statement,
       bool _buttonVisible, _requestStatus, int index) async {
     showModalBottomSheet(
@@ -573,7 +571,7 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
         });
   }
 
-  waitingBottomSheet(BuildContext context, _type, _permissionStart, _workStart,
+  waitingBottomSheet(BuildContext context, _type, _permissionStart, _workStart, //Talep durumu 'Bekliyor' BottomSheet'i
       _totalDaysOff, _statement, _requestStatus,
       int index) async {
     showModalBottomSheet(
@@ -714,7 +712,7 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
   }
 }
 
-class DashedLineButton extends StatelessWidget {
+class DashedLineButton extends StatelessWidget { //Kesik kenarlıklı buton
   const DashedLineButton({
     Key? key,
   }) : super(key: key);

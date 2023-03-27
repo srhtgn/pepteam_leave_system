@@ -19,10 +19,6 @@ Future <void> main() async {
       );
 }
 
-final firebaseinitializerProvider = FutureProvider<FirebaseApp>((ref) async {
-  return await Firebase.initializeApp();
-});
-
 final navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
@@ -43,7 +39,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatelessWidget { //Kullanıcı giriş kontrolleri
   const MainPage({Key? key}) : super(key: key);
 
   @override

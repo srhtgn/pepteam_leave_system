@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:pepteam_permission_system/constants/input_decoration.dart';
 import 'package:pepteam_permission_system/services/permission_requests_service.dart';
 import 'package:pepteam_permission_system/services/users_service.dart';
 import 'package:pepteam_permission_system/view/permit_request_sent.dart';
@@ -47,7 +48,7 @@ class _NewPermitRequestState extends State<NewPermitRequest> {
 
   String requestStatus = 'Bekliyor';
   String? type;
-  List listItem = ['Yıllık İzin', 'Ücretsiz İzin', 'Ücretli İzin'];
+  List listItem = ['Yıllık İzin', 'Ücretsiz İzin', 'Ücretli İzin']; //İzin türü listesi
 
   PermissionRequestsService _permissionRequestsService =
       PermissionRequestsService();
@@ -59,7 +60,7 @@ class _NewPermitRequestState extends State<NewPermitRequest> {
 
   @override
   Widget build(BuildContext context) {
-    if (permissionStart != null) {
+    if (permissionStart != null) { //
       enabledState = true;
       yearPermissionDateFormat =
           int.parse(DateFormat('yyyy').format(permissionStart));
@@ -85,7 +86,7 @@ class _NewPermitRequestState extends State<NewPermitRequest> {
       ),
       body: Padding(
         padding: EdgeInsets.fromLTRB(12, 12, 12, 35),
-        child: StreamBuilder<QuerySnapshot>(
+        child: StreamBuilder<QuerySnapshot>( //
           stream: _usersService.getSpecificUsers(),
           builder: (BuildContext context, AsyncSnapshot asyncSnapshot) {
             if (asyncSnapshot.hasError) {
@@ -136,23 +137,10 @@ class _NewPermitRequestState extends State<NewPermitRequest> {
                     TextField(
                       readOnly: true,
                       controller: _permissionStartController,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(right: 20, left: 20),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        hintText: '01.01.2023',
-                        fillColor: Colors.white,
-                        filled: true,
-                      ),
+                      decoration: InputDecorators().PermissionStartInput,
                       onTap: () async {
                         var initialDate;
-                        if (currentDate.weekday == DateTime.saturday) {
+                        if (currentDate.weekday == DateTime.saturday) { //Şu anki tarihin hafta sonu olması halinde yapılcak işlemler
                           initialDate = currentDate.add(Duration(days: 2));
                         } else if (currentDate.weekday == DateTime.sunday) {
                           initialDate = currentDate.add(Duration(days: 1));
@@ -161,7 +149,7 @@ class _NewPermitRequestState extends State<NewPermitRequest> {
                         DateTime? newDate = await showDatePicker(
                             context: context,
                             initialDate: initialDate,
-                            selectableDayPredicate: (DateTime val) =>
+                            selectableDayPredicate: (DateTime val) => //Hafta sonları dışındaki günler seçilebilir
                                 val.weekday == 6 || val.weekday == 7
                                     ? false
                                     : true,
@@ -184,23 +172,10 @@ class _NewPermitRequestState extends State<NewPermitRequest> {
                       enabled: enabledState,
                       readOnly: true,
                       controller: _workStartController,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(right: 20, left: 20),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        hintText: '10.01.2023',
-                        fillColor: Colors.white,
-                        filled: true,
-                      ),
+                      decoration: InputDecorators().WorkStartInput,
                       onTap: () async {
                         var initialDate;
-                        DateTime workStartDate = permissionStart.add(Duration(days: 1));
+                        DateTime workStartDate = permissionStart.add(Duration(days: 1)); //İşe başlama tarihi en erken izin başlangıç tarihinden 1 gün sonrası seçilebilir
 
                         if (workStartDate.weekday == DateTime.saturday) {
                           initialDate = workStartDate.add(Duration(days: 2));
@@ -236,20 +211,7 @@ class _NewPermitRequestState extends State<NewPermitRequest> {
                     SizedBox(height: 5),
                     TextField(
                       controller: _statementController,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(right: 20, left: 20),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        hintText: 'Açıklama girebilirsiniz',
-                        fillColor: Colors.white,
-                        filled: true,
-                      ),
+                      decoration: InputDecorators().StatementInput,
                     ),
                     Spacer(),
                     ElevatedButton(
@@ -261,14 +223,13 @@ class _NewPermitRequestState extends State<NewPermitRequest> {
                         onPressed: () {
                           valueInput();
 
-                          Duration difference =
-                              workStart.difference(permissionStart);
+                          Duration difference = workStart.difference(permissionStart); //İki tarih arasındaki gün sayısını bul, hafta sonu günleri sayısını hesapla, gün sayısından hafta sonlarını çıkar
                           int differenceInDays = difference.inDays;
                           int weekends =
                               calculateweekends(permissionStart, workStart);
                           int totalDaysOff = differenceInDays - weekends;
 
-                          if(totalDaysOff > 0){
+                          if(totalDaysOff > 0){ //Tarihlerin yanlış girilmesi durumundaki kontrol ve hata mesajı
                             PermissionRequestsService().addData(
                                 totalDaysOff,
                                 requestStatus,
@@ -279,7 +240,7 @@ class _NewPermitRequestState extends State<NewPermitRequest> {
                                 permissionStart,
                                 workStart);
 
-                            Navigator.push(
+                            Navigator.push( //Verilerin eksiksiz girilmesi durumunda izin gönderildi sayfasına git
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => PermitRequestSent()));
@@ -308,7 +269,7 @@ class _NewPermitRequestState extends State<NewPermitRequest> {
     );
   }
 
-  int calculateweekends(permissionStart, workStart) {
+  int calculateweekends(permissionStart, workStart) { //Hafta sonlarını hesaplayan method
     int weekends = 0;
     for (DateTime date = permissionStart;
         date.isBefore(workStart);
